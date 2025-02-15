@@ -71,7 +71,7 @@ func hostAlive(w http.ResponseWriter, r *http.Request) {
 
 	strOut := string(stdout)
 	thisOut := replyResponse{}
-	if strings.Contains(strOut, "1 packets transmitted, 1 received") {
+	if strings.Contains(strOut, "bytes from") {
 		thisOut.Resp = "alive"
 	} else {
 		thisOut.Resp = "dead"
