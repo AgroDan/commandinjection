@@ -52,7 +52,13 @@ func hostAliveFE(w http.ResponseWriter, r *http.Request) {
 
 func hostAlive(w http.ResponseWriter, r *http.Request) {
 	pingHost := r.FormValue("host")
-	cmd := exec.Command(fmt.Sprintf("ping -c 1 %s", pingHost))
+	bin := "/usr/bin/ping"
+	args := []string{
+		"-c",
+		"1",
+		pingHost,
+	}
+	cmd := exec.Command(bin, args...)
 	stdout, err := cmd.Output()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
