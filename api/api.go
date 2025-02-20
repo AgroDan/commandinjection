@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os/exec"
 	"path"
-	"strings"
 )
 
 // This package will host the API that will run as a webserver
@@ -51,30 +50,23 @@ func hostAliveFE(w http.ResponseWriter, r *http.Request) {
 }
 
 func hostAlive(w http.ResponseWriter, r *http.Request) {
-	pingHost := r.FormValue("host")
-	bin := "/usr/bin/ping"
-	args := []string{
-		"-c",
-		"1",
-		pingHost,
-	}
-	cmd := exec.Command(bin, args...)
-	stdout, err := cmd.Output()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	checkHost := r.FormValue("host")
+
+	commandString := fmt.Sprintf("/usr/bin/curl -ks %s -v", checkHost)
 
 	type replyResponse struct {
 		Resp string
+		Out  string
 	}
-
-	strOut := string(stdout)
 	thisOut := replyResponse{}
-	if strings.Contains(strOut, "bytes from") {
-		thisOut.Resp = "alive"
-	} else {
+
+	cmd := exec.Command("/bin/bash", "-c", commandString)
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
 		thisOut.Resp = "dead"
+	} else {
+		thisOut.Resp = "alive"
+		thisOut.Out = string(stdout)
 	}
 
 	fp := path.Join("templates", "response.html")
