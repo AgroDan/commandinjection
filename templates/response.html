@@ -39,12 +39,12 @@
 </head>
 <body>
     <header>
-        <h1>Is a host alive?</h1>
+        <h1>Is a webserver alive?</h1>
     </header>
     <main>
         <p>Host status: <b>{{ .Resp }}</b></p>
         {{ if ne "dead" .Resp }}
-        <p>Output: <br /><tt>{{ .Out }}</tt></p>
+        <p>Output: <br /><blockquote>{{ .Out }}</blockquote></p>
         {{ end }}
     </main>
     <footer>
